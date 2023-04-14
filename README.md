@@ -1,7 +1,6 @@
 
 # Reinforcement Learning Chess
-#### Arjan Groen
-
+#### Modified from code by Arjan Groen
 
 
 RLC works in three chess environments:
