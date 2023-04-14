@@ -1,13 +1,11 @@
-from RLC.capture_chess.agent import Agent
+import tensorflow as tfrom RLC.capture_chess.agent import Agent
 from RLC.capture_chess.environment import Board
 import numpy as np
 from chess.pgn import Game
 import pandas as pd
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Flatten
-from tensorflow.keras.optimizers import Adam
 
-class DeepQ_learning(object):
+
+class Q_learning(object):
 
     def __init__(self, agent, env, memsize=1000):
         """
@@ -24,18 +22,33 @@ class DeepQ_learning(object):
         self.reward_trace = []
         self.memory = []
         self.sampling_probs = []
-        self.deep_q_network = self.build_deep_q_network()
 
-    def build_deep_q_network(self):
-        model = Sequential()
-        model.add(Dense(64, input_shape=(8, 8, 8), activation='relu'))
-        model.add(Flatten())
-        model.add(Dense(64, activation='relu'))
-        model.add(Dense(64 * 64, activation='linear'))
-        model.compile(loss='mse', optimizer=Adam(lr=0.001))
-        return model
+    def learn(self, iters=100, c=10):
+        """
+        Run the Q-learning algorithm. Play greedy on the final iter
+        Args:
+            iters: int
+                amount of games to train
+            c: int
+                update the network every c games
 
-    # Other methods remain the same, but modify the play_game method
+        Returns: pgn (str)
+            pgn string describing final game
+
+        """
+        for k in range(iters):
+            if k % c == 0:
+                print("iter", k)
+                self.agent.fix_model()
+            greedy = True if k == iters - 1 else False
+            self.env.reset()
+            self.play_game(k, greedy=greedy)
+
+        pgn = Game.from_board(self.env.board)
+        reward_smooth = pd.DataFrame(self.reward_trace)
+        reward_smooth.rolling(window=10, min_periods=0).mean().plot()
+
+        return pgn
 
     def play_game(self, k, greedy=False, maxiter=25):
         """
@@ -65,9 +78,8 @@ class DeepQ_learning(object):
                 move = self.env.get_random_action()
                 move_from = move.from_square
                 move_to = move.to_square
-            # Modify the action-value estimation using the deep Q-network
             else:
-                action_values = self.deep_q_network.predict(np.expand_dims(state, axis=0))
+                action_values = self.agent.get_action_values(np.expand_dims(state, axis=0))
                 action_values = np.reshape(np.squeeze(action_values), (64, 64))
                 action_space = self.env.project_legal_moves()  # The environment determines which moves are legal
                 action_values = np.multiply(action_values, action_space)
@@ -80,7 +92,7 @@ class DeepQ_learning(object):
                     move_from = move.from_square
                     move_to = move.to_square
                 else:
-                    move = np.random.choice(moves)
+                    move = np.random.choice(moves)  # If there are multiple max-moves, pick a random one.
 
             episode_end, reward = self.env.step(move)
             new_state = self.env.layer_board
