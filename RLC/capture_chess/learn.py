@@ -3,9 +3,9 @@ from RLC.capture_chess.environment import Board
 import numpy as np
 from chess.pgn import Game
 import pandas as pd
-from keras.models import Sequential
-from keras.layers import Dense, Flatten
-from keras.optimizers import Adam
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Flatten
+from tensorflow.keras.optimizers import Adam
 
 class DeepQ_learning(object):
 
