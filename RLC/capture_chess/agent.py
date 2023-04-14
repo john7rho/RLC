@@ -1,8 +1,8 @@
-from tensorflow.keras.models import Model, clone_model
-from tensorflow.keras.layers import Input, Conv2D, Dense, Reshape, Dot, Activation, Multiply
-from tensorflow.keras.optimizers import SGD
+from keras.models import Model, clone_model
+from keras.layers import Input, Conv2D, Dense, Reshape, Dot, Activation, Multiply
+from keras.optimizers import SGD
 import numpy as np
-import tensorflow.keras.backend as K
+import keras.backend as K
 
 
 def policy_gradient_loss(Returns):
@@ -15,7 +15,7 @@ def policy_gradient_loss(Returns):
 
 class Agent(object):
 
-    def __init__(self, gamma=0.5, network='linear', lr=0.01, verbose=0):
+    def __init__(self, gamma=0.5, network='conv', lr=0.01, verbose=0):
         """
         Agent that plays the white pieces in capture chess
         Args:
