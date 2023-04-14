@@ -1,8 +1,8 @@
-from keras.models import Model, clone_model
-from keras.layers import Input, Conv2D, Dense, Reshape, Dot, Activation, Multiply
-from keras.optimizers import SGD
+from tensorflow.keras.models import Model, clone_model
+from tensorflow.keras.layers import Input, Conv2D, Dense, Reshape, Dot, Activation, Multiply
+from tensorflow.keras.optimizers import SGD
 import numpy as np
-import keras.backend as K
+import tensorflow.keras.backend as K
 
 
 def policy_gradient_loss(Returns):
