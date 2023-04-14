@@ -72,8 +72,9 @@ class DeepQ_learning(object):
                 move = self.env.get_random_action()
                 move_from = move.from_square
                 move_to = move.to_square
+            # Modify the action-value estimation using the deep Q-network
             else:
-                action_values = self.agent.get_action_values(np.expand_dims(state, axis=0))
+                action_values = self.deep_q_network.predict(np.expand_dims(state, axis=0))
                 action_values = np.reshape(np.squeeze(action_values), (64, 64))
                 action_space = self.env.project_legal_moves()  # The environment determines which moves are legal
                 action_values = np.multiply(action_values, action_space)
@@ -86,7 +87,7 @@ class DeepQ_learning(object):
                     move_from = move.from_square
                     move_to = move.to_square
                 else:
-                    move = np.random.choice(moves)  # If there are multiple max-moves, pick a random one.
+                    move = np.random.choice(moves)
 
             episode_end, reward = self.env.step(move)
             new_state = self.env.layer_board
