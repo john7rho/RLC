@@ -130,11 +130,6 @@ class Board(object):
         return pawns + rooks + minor + queen
 
     def reset(self):
-        """
-        Reset the environment
-        Returns:
-
-        """
         if self.endgame_fens:
             self.FEN = random.choice(self.endgame_fens)
         self.board = chess.Board(self.FEN) if self.FEN else chess.Board()
