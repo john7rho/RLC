@@ -240,3 +240,13 @@ class Agent(object):
         td_errors = returns - V_state
 
         return td_errors
+    
+    def load_weights(self, file_path):
+        """
+        Load the model weights from the given file path.
+        Args:
+            file_path: str
+                The path to the saved model weights file (.h5).
+        """
+        self.model.load_weights(file_path) # agent = Agent(); agent.load_weights("path/to/your/saved_model_weights.h5")
+
