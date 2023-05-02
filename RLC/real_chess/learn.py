@@ -89,6 +89,9 @@ class TD_search(object):
             state = np.expand_dims(self.env.layer_board.copy(), axis=0)
             state_value = self.agent.predict(state)
 
+            # Change: Introduce noise after the state and state value are decided
+            self.env.obscure_pieces()
+            
             # White's turn involves tree-search
             if self.env.board.turn:
 
